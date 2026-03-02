@@ -15,7 +15,7 @@ import { MotiView } from 'moti';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { fetchPostsByCategory, CATEGORIES } from '../api/wordpress';
-import NewsCard from '../components/NewsCard';
+import TrendingCard from '../components/cards/TrendingCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorState from '../components/ErrorState';
 import { BorderRadius, FontSize, Shadows, Spacing, CategoryColors } from '../theme';
@@ -153,7 +153,7 @@ export default function CategoryScreen({ navigation }) {
           initialNumToRender={6}
           renderItem={({ item, index }) => (
             <View style={isTablet ? { flex: 1, maxWidth: '50%' } : null}>
-              <NewsCard article={item} onPress={() => navigateToArticle(item)} index={index} />
+              <TrendingCard article={item} onPress={() => navigateToArticle(item)} index={index} />
             </View>
           )}
           refreshControl={

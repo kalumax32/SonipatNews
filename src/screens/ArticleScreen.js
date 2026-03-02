@@ -26,7 +26,7 @@ import { useTheme } from '../context/ThemeContext';
 import { isBookmarked, addBookmark, removeBookmark } from '../api/bookmarks';
 import { fetchPostsByCategory } from '../api/wordpress';
 import CategoryBadge from '../components/CategoryBadge';
-import NewsCard from '../components/NewsCard';
+import TrendingCard from '../components/cards/TrendingCard';
 import FloatingButton from '../components/FloatingButton';
 import AnimatedCard from '../components/AnimatedCard';
 import { BorderRadius, FontSize, Spacing, CategoryColors } from '../theme';
@@ -340,7 +340,7 @@ export default function ArticleScreen({ route, navigation }) {
               </Text>
               {relatedArticles.map((related, index) => (
                 <AnimatedCard key={related.id} index={index + 1} onPress={() => navigation.push('Article', { article: related })}>
-                  <NewsCard article={related} onPress={() => navigation.push('Article', { article: related })} />
+                  <TrendingCard article={related} onPress={() => navigation.push('Article', { article: related })} />
                 </AnimatedCard>
               ))}
             </MotiView>

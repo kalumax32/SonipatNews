@@ -1,17 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme } from '../context/ThemeContext';
-import { BorderRadius, Typography, Spacing, FontSize } from '../theme';
-import AnimatedPressable from './AnimatedPressable';
-import GlassCard from './GlassCard';
-import CategoryBadge from './CategoryBadge';
+import { useTheme } from '../../context/ThemeContext';
+import { BorderRadius, Typography, Spacing } from '../../theme';
+import AnimatedPressable from '../core/AnimatedPressable';
+import ShimmerImage from '../core/ShimmerImage';
+import { FadeInDown } from 'react-native-reanimated';
 
-const blurhash =
-  '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
-
-export default function NewsCard({ article, onPress, index = 0, highlightQuery = '' }) {
+export default function TrendingCard({ article, onPress, index = 0, highlightQuery = '' }) {
   const { colors } = useTheme();
 
   const category = article.categories?.[0];
@@ -43,6 +38,8 @@ export default function NewsCard({ article, onPress, index = 0, highlightQuery =
 
   return (
     <AnimatedPressable
+      index={index}
+      entering={FadeInDown.delay(index * 50).springify().damping(12).stiffness(200)}
       onPress={onPress}
       style={[
         styles.card,
@@ -79,12 +76,9 @@ export default function NewsCard({ article, onPress, index = 0, highlightQuery =
         </View>
 
         <View style={styles.imageContainer}>
-          <Image
+          <ShimmerImage
             style={styles.image}
             source={article.featuredImageMedium || article.featuredImage}
-            placeholder={blurhash}
-            contentFit="cover"
-            transition={200}
           />
         </View>
       </View>
@@ -94,10 +88,9 @@ export default function NewsCard({ article, onPress, index = 0, highlightQuery =
 
 const styles = StyleSheet.create({
   card: {
-    marginHorizontal: Spacing.lg,
+    marginHorizontal: Spacing.md,
     marginBottom: Spacing.md,
     borderRadius: BorderRadius.lg, // 20px
-    // Utilizing Shadows config if available, otherwise manual
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -106,7 +99,7 @@ const styles = StyleSheet.create({
   },
   cardInner: {
     flexDirection: 'row',
-    padding: Spacing.md,
+    padding: 16, // 16px padding inside
     gap: Spacing.md,
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
@@ -134,13 +127,13 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 10,
-    fontWeight: '800', // tracking-widest
+    fontWeight: '800', 
     letterSpacing: 1.2,
     textTransform: 'uppercase',
   },
   title: {
     fontSize: 17,
-    fontFamily: Typography.titleXL.fontFamily, // 'Newsreader_700Bold'
+    fontFamily: Typography.titleXL.fontFamily,
     fontWeight: '700',
     lineHeight: 23,
     marginBottom: Spacing.xs,

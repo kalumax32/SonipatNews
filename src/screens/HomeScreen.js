@@ -9,7 +9,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useScrollToTop } from '@react-navigation/native';
 import Animated, {
@@ -21,60 +20,24 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { MotiView } from 'moti';
 import { useTheme } from '../context/ThemeContext';
 import { fetchPosts, fetchPostsByCategory, CATEGORIES } from '../api/wordpress';
 import { getCachedData, setCachedData } from '../api/cache';
-import NewsCard from '../components/NewsCard';
-import HeroCard from '../components/HeroCard';
+import TrendingCard from '../components/cards/TrendingCard';
+import HeroCard from '../components/cards/HeroCard';
 import SkeletonLoader from '../components/SkeletonLoader';
 import FloatingButton from '../components/FloatingButton';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorState from '../components/ErrorState';
-import { BorderRadius, FontSize, Spacing, Typography } from '../theme';
+import { Spacing, Typography } from '../theme';
+import { FlashList } from '@shopify/flash-list';
+import HomeHeader from '../components/layout/HomeHeader';
+import CategoryTabs from '../components/layout/CategoryTabs';
 
-// Memoized Category Tab for Performance
-const CategoryTabs = React.memo(({ categories, selectedId, onSelect }) => {
-  const { colors } = useTheme();
-  
-  return (
-    <Animated.ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={styles.categoryScroll}
-      contentContainerStyle={styles.categoryContent}
-    >
-      {(categories || []).map((cat) => {
-        const isActive = selectedId === cat.id;
-        return (
-          <TouchableOpacity
-            key={cat.slug}
-            onPress={() => onSelect(cat.id)}
-            activeOpacity={0.7}
-            accessibilityRole="tab"
-          >
-            {isActive ? (
-              <View style={[styles.categoryTab, { backgroundColor: colors.primary, borderWidth: 0, shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 5 }]}>
-                <Text style={[styles.categoryText, { color: '#FFFFFF', fontWeight: '600' }]}>
-                  {cat.name}
-                </Text>
-              </View>
-            ) : (
-              <View style={[styles.categoryTab, { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 }]}>
-                <Text style={[styles.categoryText, { color: colors.textSecondary, fontWeight: '600' }]}>
-                  {cat.name}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        );
-      })}
-    </Animated.ScrollView>
-  );
-});
+const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 export default function HomeScreen({ navigation }) {
-  const { colors, isDark, toggleTheme } = useTheme();
+  const { colors, isDark } = useTheme();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
@@ -96,15 +59,6 @@ export default function HomeScreen({ navigation }) {
   });
 
   const allCategories = [{ id: null, name: 'सभी', slug: 'all' }, ...CATEGORIES];
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
-  };
-
-  const formattedDate = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'short', day: 'numeric' }).format(new Date());
 
   useEffect(() => { loadArticles(true); }, [selectedCategory]);
 
@@ -174,6 +128,18 @@ export default function HomeScreen({ navigation }) {
     ],
   }));
 
+  const renderItem = useCallback(({ item, index }) => {
+    return (
+      <View style={isTablet ? { flex: 1, maxWidth: '50%' } : null}>
+        <TrendingCard 
+          article={item} 
+          onPress={() => navigation.navigate('Article', { article: item })} 
+          index={index + 1} 
+        />
+      </View>
+    );
+  }, [isTablet, navigation]);
+
   if (loading && articles.length === 0) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -200,24 +166,7 @@ export default function HomeScreen({ navigation }) {
           tint={isDark ? 'dark' : 'light'} 
           style={{ paddingTop: Math.max(insets.top, 20) + Spacing.sm, paddingBottom: 0 }}
         >
-          <View style={styles.header}>
-            <View style={styles.headerTitleRow}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <View style={[styles.avatarContainer, { backgroundColor: colors.skeleton, borderColor: colors.border }]}>
-                  <Text style={[styles.avatarInitials, { color: colors.textSecondary }]}>MK</Text>
-                </View>
-                <View>
-                  <Text style={[styles.dateText, { color: colors.textMuted }]}>{formattedDate.toUpperCase()}</Text>
-                  <Text style={[Typography.titleXL, { color: colors.textPrimary }]}>
-                    {getGreeting()}
-                  </Text>
-                </View>
-              </View>
-              <TouchableOpacity style={[styles.themeButton, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Ionicons name="notifications-outline" size={22} color={colors.textPrimary} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <HomeHeader avatarInitials="MK" />
           
           <View style={{ paddingBottom: Spacing.md }}>
             <CategoryTabs categories={allCategories} selectedId={selectedCategory} onSelect={setSelectedCategory} />
@@ -225,27 +174,24 @@ export default function HomeScreen({ navigation }) {
         </BlurView>
       </Animated.View>
 
-      <Animated.FlatList
+      <AnimatedFlashList
         ref={flatListRef}
         key={isTablet ? 'tablet-2' : 'phone-1'}
         numColumns={isTablet ? 2 : 1}
         data={feedArticles}
         keyExtractor={(item) => item.id.toString()}
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={8}
-        windowSize={10}
-        initialNumToRender={6}
+        estimatedItemSize={128} // Based on 96px image + padding
         onScroll={onScroll}
         scrollEventThrottle={16}
-        renderItem={({ item, index }) => (
-          <View style={isTablet ? { flex: 1, maxWidth: '50%' } : null}>
-            <NewsCard article={item} onPress={() => navigation.navigate('Article', { article: item })} index={index + 1} />
-          </View>
-        )}
+        renderItem={renderItem}
         ListHeaderComponent={
           <View>
             {heroArticle && (
-              <HeroCard article={heroArticle} onPress={() => navigation.navigate('Article', { article: heroArticle })} index={0} />
+              <HeroCard 
+                article={heroArticle} 
+                onPress={() => navigation.navigate('Article', { article: heroArticle })} 
+                index={0} 
+              />
             )}
             <View style={styles.sectionHeader}>
               <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
@@ -275,53 +221,9 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   headerContainer: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, elevation: 4 },
-  header: {
-    padding: Spacing.lg,
-    paddingTop: Spacing.md,
-  },
-  headerTitleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  avatarContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarInitials: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  dateText: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1,
-    marginBottom: 2,
-  },
-  themeButton: { 
-    width: 40, 
-    height: 40, 
-    borderRadius: 20, 
-    borderWidth: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 20,
-    elevation: 2,
-  },
-  categoryScroll: { maxHeight: 45 },
-  categoryContent: { paddingHorizontal: Spacing.lg, paddingVertical: 4, gap: Spacing.sm },
-  categoryTab: { paddingHorizontal: 20, height: 36, borderRadius: BorderRadius.full, justifyContent: 'center' },
-  categoryText: { fontSize: 12 },
   listContent: { paddingTop: 180 },
   loadingMore: { height: 80, alignItems: 'center', justifyContent: 'center', marginBottom: 40 },
-  fabContainer: { position: 'absolute', bottom: Spacing.xl + 70, right: Spacing.xl, zIndex: 999 }, // Adjust for tabbar overscroll
+  fabContainer: { position: 'absolute', bottom: Spacing.xl + 90, right: Spacing.xl, zIndex: 999 }, // Adjust for floating tabbar overscroll
   sectionHeader: { 
     flexDirection: 'row', 
     alignItems: 'center', 

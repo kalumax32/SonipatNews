@@ -13,7 +13,8 @@ const CommonColors = {
 
 export const Colors = {
   light: {
-    primary: '#111827', // Primary Text
+    primary: '#2563EB', // primary mapped to Tailwind 2563EB
+    slateCustom: '#0f172a',
     primaryDark: '#000000',
     primaryLight: '#374151',
     accent: '#2563EB', // Blue Accent

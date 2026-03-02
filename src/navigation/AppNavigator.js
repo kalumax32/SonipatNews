@@ -22,7 +22,26 @@ const Stack = createNativeStackNavigator();
 
 const screenOptions = {
   headerShown: false,
-  animation: 'fade', // Smooth slide + fade content transition replacement
+  animation: 'none', // Disable default to use custom Reanimated transition
+  customAnimationOnGesture: true,
+  contentStyle: { backgroundColor: 'transparent' },
+  animationTypeForReplace: 'push',
+  presentation: 'transparentModal',
+  cardStyleInterpolator: ({ current, layouts }) => {
+    return {
+      cardStyle: {
+        opacity: current.progress,
+        transform: [
+          {
+            translateY: current.progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [20, 0], // Slide up by 20px
+            }),
+          },
+        ],
+      },
+    };
+  },
 };
 
 function HomeStack() {
@@ -133,21 +152,25 @@ export default function AppNavigator() {
           tabBarShowLabel: true,
           tabBarStyle: {
             position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            elevation: 0,
-            backgroundColor: isDark ? 'rgba(22, 17, 33, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+            bottom: Spacing.md,
+            left: Spacing.md,
+            right: Spacing.md,
+            maxWidth: 430,
+            alignSelf: 'center',
+            marginHorizontal: 'auto',
+            elevation: 8,
+            backgroundColor: isDark ? 'rgba(22, 17, 33, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+            borderRadius: BorderRadius.full,
+            borderWidth: 1,
+            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
             borderTopWidth: 1,
-            borderTopColor: colors.border,
-            borderTopLeftRadius: 0,
-            borderTopRightRadius: 0,
-            height: 70 + insets.bottom,
-            paddingBottom: insets.bottom > 0 ? insets.bottom : 12,
-            paddingTop: 8,
+            borderTopColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+            height: 64,
+            paddingBottom: 0,
+            paddingTop: 0,
             shadowColor: '#000',
-            shadowOffset: { width: 0, height: -4 },
-            shadowOpacity: 0.05,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
             shadowRadius: 20,
           },
           tabBarBackground: () => (

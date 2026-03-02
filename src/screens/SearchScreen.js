@@ -16,7 +16,7 @@ import { MotiView } from 'moti';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { searchPosts } from '../api/wordpress';
-import NewsCard from '../components/NewsCard';
+import TrendingCard from '../components/cards/TrendingCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { BorderRadius, FontSize, Spacing } from '../theme';
 
@@ -170,7 +170,7 @@ export default function SearchScreen({ navigation }) {
           initialNumToRender={6}
           renderItem={({ item, index }) => (
             <View style={isTablet ? { flex: 1, maxWidth: '50%' } : null}>
-              <NewsCard article={item} onPress={() => navigateToArticle(item)} index={index} highlightQuery={query} />
+              <TrendingCard article={item} onPress={() => navigateToArticle(item)} index={index} highlightQuery={query} />
             </View>
           )}
           ListEmptyComponent={

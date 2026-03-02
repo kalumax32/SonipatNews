@@ -14,7 +14,7 @@ import { MotiView } from 'moti';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { getBookmarks, removeBookmark } from '../api/bookmarks';
-import NewsCard from '../components/NewsCard';
+import TrendingCard from '../components/cards/TrendingCard';
 import { FontSize, Spacing, BorderRadius } from '../theme';
 import { lightHaptic, successHaptic } from '../utils/haptics';
 
@@ -86,7 +86,7 @@ export default function BookmarksScreen({ navigation }) {
         initialNumToRender={6}
         renderItem={({ item, index }) => (
           <View style={styles.bookmarkItem}>
-            <NewsCard article={item} onPress={() => navigateToArticle(item)} index={index} />
+            <TrendingCard article={item} onPress={() => navigateToArticle(item)} index={index} />
             <TouchableOpacity
               style={[
                 styles.removeBtn,

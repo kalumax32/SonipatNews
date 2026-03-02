@@ -1,30 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { Image } from 'expo-image';
+import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme } from '../context/ThemeContext';
-import { BorderRadius, Typography, Spacing } from '../theme';
-import AnimatedPressable from './AnimatedPressable';
-import CategoryBadge from './CategoryBadge';
-import PulsingDot from './PulsingDot';
-
+import { useTheme } from '../../context/ThemeContext';
+import { BorderRadius, Typography, Spacing } from '../../theme';
+import AnimatedPressable from '../core/AnimatedPressable';
+import ShimmerImage from '../core/ShimmerImage';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { FadeInDown } from 'react-native-reanimated';
 
 const HERO_HEIGHT = 400;
-
-const blurhash =
-  '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 export default function HeroCard({ article, onPress, index = 0 }) {
   const { colors } = useTheme();
 
   if (!article) return null;
 
-  const isToday = new Date(article.date).toDateString() === new Date().toDateString();
-
   return (
     <AnimatedPressable
+      index={index}
+      entering={FadeInDown.delay(index * 50).springify().damping(12).stiffness(200)}
       onPress={onPress}
       style={[
         styles.container,
@@ -35,12 +30,9 @@ export default function HeroCard({ article, onPress, index = 0 }) {
       ]}
     >
       <View style={styles.imageWrapper}>
-        <Image
+        <ShimmerImage
           style={styles.image}
           source={article.featuredImage || article.featuredImageMedium}
-          placeholder={blurhash}
-          contentFit="cover"
-          transition={300}
         />
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.9)']}
@@ -59,7 +51,6 @@ export default function HeroCard({ article, onPress, index = 0 }) {
             {article.title}
           </Text>
           
-          {/* Add a short description since Stitch uses it */}
           {article.excerpt && (
             <Text style={styles.description} numberOfLines={2}>
               {article.excerpt.replace(/<[^>]*>?/gm, '')}
@@ -89,7 +80,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.md,
     marginBottom: Spacing.xl,
     marginTop: Spacing.md,
-    borderRadius: BorderRadius.xl, // robust squircle corners
+    borderRadius: BorderRadius.lg, // matching 20px
     overflow: 'hidden',
     shadowOffset: { width: 0, height: 14 },
     shadowOpacity: 0.12,
