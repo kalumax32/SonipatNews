@@ -29,7 +29,7 @@ function HomeStack() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="HomeMain" component={HomeScreen} />
-      <Stack.Screen name="Article" component={ArticleScreen} />
+      <Stack.Screen name="Article" component={ArticleScreen} options={{ tabBarStyle: { display: 'none' } }} />
     </Stack.Navigator>
   );
 }
@@ -38,7 +38,7 @@ function CategoryStack() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="CategoryMain" component={CategoryScreen} />
-      <Stack.Screen name="Article" component={ArticleScreen} />
+      <Stack.Screen name="Article" component={ArticleScreen} options={{ tabBarStyle: { display: 'none' } }} />
     </Stack.Navigator>
   );
 }
@@ -47,7 +47,7 @@ function SearchStack() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="SearchMain" component={SearchScreen} />
-      <Stack.Screen name="Article" component={ArticleScreen} />
+      <Stack.Screen name="Article" component={ArticleScreen} options={{ tabBarStyle: { display: 'none' } }} />
     </Stack.Navigator>
   );
 }
@@ -56,7 +56,7 @@ function BookmarksStack() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="BookmarksMain" component={BookmarksScreen} />
-      <Stack.Screen name="Article" component={ArticleScreen} />
+      <Stack.Screen name="Article" component={ArticleScreen} options={{ tabBarStyle: { display: 'none' } }} />
     </Stack.Navigator>
   );
 }
@@ -129,44 +129,47 @@ export default function AppNavigator() {
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.textMuted,
+          tabBarInactiveTintColor: isDark ? '#94a3b8' : '#94a3b8',
           tabBarShowLabel: true,
           tabBarStyle: {
             position: 'absolute',
-            bottom: Spacing.md,
-            left: Spacing.md,
-            right: Spacing.md,
+            bottom: 0,
+            left: 0,
+            right: 0,
             elevation: 0,
-            backgroundColor: isDark ? 'rgba(20,20,20,0.85)' : 'rgba(255,255,255,0.85)',
-            borderTopWidth: 0,
-            borderRadius: BorderRadius.full,
-            height: 65,
+            backgroundColor: isDark ? 'rgba(22, 17, 33, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+            borderTopWidth: 1,
+            borderTopColor: colors.border,
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+            height: 70 + insets.bottom,
+            paddingBottom: insets.bottom > 0 ? insets.bottom : 12,
+            paddingTop: 8,
             shadowColor: '#000',
-            shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.1,
+            shadowOffset: { width: 0, height: -4 },
+            shadowOpacity: 0.05,
             shadowRadius: 20,
-            bottom: Math.max(insets.bottom, 20), // Support gesture navigation bars and home indicators
           },
           tabBarBackground: () => (
             <BlurView
               tint={isDark ? 'dark' : 'light'}
-              intensity={80}
-              style={[StyleSheet.absoluteFill, { borderRadius: BorderRadius.full, overflow: 'hidden' }]}
+              intensity={90}
+              style={StyleSheet.absoluteFill}
             />
           ),
           tabBarButton: (props) => <TabBarButton {...props} />,
           tabBarLabelStyle: {
             fontSize: 10,
-            fontWeight: '600',
-            marginTop: -5,
-            marginBottom: Platform.OS === 'ios' ? 0 : 8,
+            fontWeight: '700',
+            marginTop: 4,
+            fontFamily: 'Inter_700Bold',
           },
         })}
       >
-        <Tab.Screen name="Home" component={HomeStack} options={{ tabBarLabel: 'होम' }} />
-        <Tab.Screen name="Categories" component={CategoryStack} options={{ tabBarLabel: 'श्रेणियाँ' }} />
-        <Tab.Screen name="Search" component={SearchStack} options={{ tabBarLabel: 'खोजें' }} />
-        <Tab.Screen name="Bookmarks" component={BookmarksStack} options={{ tabBarLabel: 'बुकमार्क' }} />
+        <Tab.Screen name="Home" component={HomeStack} options={{ tabBarLabel: 'Home' }} />
+        <Tab.Screen name="Categories" component={CategoryStack} options={{ tabBarLabel: 'Explore' }} />
+        <Tab.Screen name="Search" component={SearchStack} options={{ tabBarLabel: 'Search' }} />
+        <Tab.Screen name="Bookmarks" component={BookmarksStack} options={{ tabBarLabel: 'Saved' }} />
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -181,5 +184,12 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  activeIndicator: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'transparent', // color is set via tabBarActiveTintColor passthrough, use primary
+    marginTop: 2,
   },
 });

@@ -1,14 +1,25 @@
 import React from 'react';
+
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, LogBox } from 'react-native';
 import { ThemeProvider } from './src/context/ThemeContext';
 import AppNavigator from './src/navigation/AppNavigator';
+import { useFonts } from 'expo-font';
+import {
+  Newsreader_700Bold,
+} from '@expo-google-fonts/newsreader';
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from '@expo-google-fonts/inter';
+import * as SplashScreen from 'expo-splash-screen';
 
-// Suppress non-critical warnings in dev
+SplashScreen.preventAutoHideAsync();
+
 LogBox.ignoreLogs(['Warning:']);
-
-console.log('[App] App module loaded');
 
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
@@ -18,7 +29,7 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('[ErrorBoundary] Caught error:', error, errorInfo);
+    // Silent fail in production, use a crash reporter here in the future
   }
 
   render() {
@@ -39,6 +50,24 @@ class ErrorBoundary extends React.Component {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Newsreader_700Bold,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+  });
+
+  React.useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   console.log('[App] App component rendering');
   return (
     <ErrorBoundary>

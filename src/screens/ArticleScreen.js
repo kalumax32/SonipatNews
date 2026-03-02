@@ -16,10 +16,12 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from 'moti';
 import { Image } from 'expo-image';
 import RenderHtml from 'react-native-render-html';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Feather } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { isBookmarked, addBookmark, removeBookmark } from '../api/bookmarks';
 import { fetchPostsByCategory } from '../api/wordpress';
@@ -41,6 +43,16 @@ export default function ArticleScreen({ route, navigation }) {
   const [relatedArticles, setRelatedArticles] = useState([]);
 
   const scrollY = useSharedValue(0);
+
+  // Hide the bottom tab bar on article screen so the share FAB is accessible
+  useEffect(() => {
+    const parent = navigation.getParent();
+    parent?.setOptions({ tabBarStyle: { display: 'none' } });
+    return () => {
+      // Restore the tab bar when leaving the article screen
+      parent?.setOptions({ tabBarStyle: undefined });
+    };
+  }, [navigation]);
 
   useEffect(() => {
     checkBookmark();
@@ -116,7 +128,6 @@ export default function ArticleScreen({ route, navigation }) {
     );
     return {
       opacity,
-      backgroundColor: headerColor,
       transform: [{ translateY }],
     };
   });
@@ -157,14 +168,13 @@ export default function ArticleScreen({ route, navigation }) {
     strong: { fontWeight: '800', color: colors.text },
     blockquote: {
       borderLeftWidth: 4,
-      borderLeftColor: headerColor,
-      paddingLeft: Spacing.xl,
-      marginVertical: Spacing.xl,
+      borderLeftColor: colors.accent,
+      paddingLeft: 24,
+      marginVertical: 32,
       fontStyle: 'italic',
-      color: colors.text,
-      backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-      padding: Spacing.md,
-      borderRadius: BorderRadius.sm,
+      color: colors.textSecondary,
+      fontSize: 22,
+      lineHeight: 34,
     },
   };
 
@@ -173,34 +183,41 @@ export default function ArticleScreen({ route, navigation }) {
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       {/* Floating Header */}
-      <Animated.View style={[styles.floatingHeader, { paddingTop: Math.max(insets.top, 20) + Spacing.sm }, headerAnimatedStyle]}>
-        <View style={styles.headerContent}>
+      <Animated.View style={[styles.floatingHeader, headerAnimatedStyle]}>
+        <BlurView 
+          intensity={90} 
+          tint={isDark ? "dark" : "light"}
+          style={[styles.headerBlurContent, { paddingTop: Math.max(insets.top, 20) + Spacing.sm }]}
+        >
           <TouchableOpacity 
             onPress={() => navigation.goBack()} 
-            style={styles.iconBtn}
+            style={[styles.iconBtn, { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }]}
             accessibilityRole="button"
             accessibilityLabel="वापस जाएँ"
           >
-            <Ionicons name="arrow-back" size={24} color="#FFF" />
+            <Ionicons name="arrow-back" size={24} color={colors.text} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle} numberOfLines={1}>
+          <Text style={[styles.headerTitle, { color: colors.text }]} numberOfLines={1}>
             {article.title}
           </Text>
           <View style={styles.topBarActions}>
             <TouchableOpacity 
               onPress={toggleBookmark} 
-              style={styles.iconBtn}
+              style={[styles.iconBtn, { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }]}
               accessibilityRole="button"
               accessibilityLabel={bookmarked ? "बुकमार्क हटाएँ" : "बुकमार्क करें"}
               accessibilityState={{ checked: bookmarked }}
             >
-              <Ionicons
-                name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+              <Feather
+                name="bookmark"
                 size={22}
-                color="#FFF"
+                color={bookmarked ? colors.primaryLight : colors.text}
               />
             </TouchableOpacity>
           </View>
+        </BlurView>
+        <View style={styles.progressBarBg}>
+          <Animated.View style={[styles.progressBarFill, progressStyle, { backgroundColor: colors.accent }]} />
         </View>
       </Animated.View>
 
@@ -222,8 +239,8 @@ export default function ArticleScreen({ route, navigation }) {
             accessibilityLabel={bookmarked ? "बुकमार्क हटाएँ" : "बुकमार्क करें"}
             accessibilityState={{ checked: bookmarked }}
           >
-            <Ionicons
-              name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+            <Feather
+              name="bookmark"
               size={22}
               color={bookmarked ? headerColor : '#FFF'}
             />
@@ -255,7 +272,6 @@ export default function ArticleScreen({ route, navigation }) {
           ) : (
             <View style={[styles.featuredImage, { backgroundColor: colors.skeleton }]} />
           )}
-          <View style={styles.heroGradient} />
         </Animated.View>
 
         <MotiView
@@ -264,48 +280,42 @@ export default function ArticleScreen({ route, navigation }) {
           transition={{ type: 'timing', duration: 500, delay: 200 }}
           style={[styles.articleContent, { backgroundColor: colors.background }]}
         >
-          {/* Category */}
+          {/* Category Tag */}
           <View style={styles.categoryRow}>
-            {primaryCategory && article.categories.map((cat) => (
-              <CategoryBadge key={cat.id} name={cat.name} slug={cat.slug} />
-            ))}
-            {article.readTime && (
-              <View style={[styles.readTime, { backgroundColor: headerColor + '15' }]}>
-                <Ionicons name="time-outline" size={14} color={headerColor} />
-                <Text style={[styles.readTimeText, { color: headerColor }]}>
-                  {article.readTime} min read
+            {primaryCategory && (
+              <View style={[styles.categoryBadge, { backgroundColor: colors.accent + '20' }]}>
+                <Text style={[styles.categoryText, { color: colors.accent }]}>
+                  {primaryCategory.name.toUpperCase()}
                 </Text>
               </View>
             )}
           </View>
 
           {/* Title */}
-          <Text style={[styles.title, { color: colors.text }]}>
+          <Text style={[styles.articleTitle, { color: colors.text }]}>
             {article.title}
           </Text>
 
           {/* Meta */}
           <View style={styles.metaRow}>
             <View style={styles.authorInfo}>
-              <View style={[styles.avatar, { backgroundColor: headerColor + '30' }]}>
-                <Text style={{ color: headerColor, fontWeight: 'bold' }}>
+              <View style={[styles.avatar, { backgroundColor: colors.accent + '20' }]}>
+                <Text style={{ color: colors.accent, fontWeight: 'bold' }}>
                   {article.author.charAt(0)}
                 </Text>
               </View>
-              <Text style={[styles.metaText, { color: colors.text, fontWeight: '600' }]}>
-                {article.author}
-              </Text>
-            </View>
-            <View style={styles.metaRight}>
-              <Text style={[styles.metaTextSmall, { color: colors.textMuted }]}>
-                {article.dateFormatted}
-              </Text>
-              <Text style={[styles.dot, { color: colors.textMuted }]}>•</Text>
-              <Text style={[styles.metaTextSmall, { color: colors.textMuted }]}>
-                {article.readTime} min read
-              </Text>
+              <View>
+                <Text style={[styles.metaText, { color: colors.text, fontWeight: '700' }]}>
+                  {article.author}
+                </Text>
+                <Text style={[styles.metaTextSmall, { color: colors.textMuted }]}>
+                  {article.dateFormatted} • {article.readTime} min read
+                </Text>
+              </View>
             </View>
           </View>
+          
+          <View style={{ height: 1, backgroundColor: colors.border, marginVertical: 20 }} />
 
           {/* Article HTML Content */}
           <View style={styles.htmlWrapper}>
@@ -338,8 +348,15 @@ export default function ArticleScreen({ route, navigation }) {
         </MotiView>
       </Animated.ScrollView>
 
-      {/* Floating Share Button */}
-      <FloatingButton icon="share-social" onPress={shareArticle} />
+      {/* Floating Action Buttons */}
+      <View style={styles.floatingButtons}>
+        <TouchableOpacity style={styles.circleBtn} onPress={toggleBookmark}>
+          <Feather name="bookmark" size={20} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.circleBtn} onPress={shareArticle}>
+          <Feather name="share-2" size={20} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -354,27 +371,35 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 100,
-    paddingTop: Spacing.xl + 35,
-    paddingBottom: Spacing.md,
-    paddingHorizontal: Spacing.md,
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
   },
-  headerContent: {
+  headerBlurContent: {
+    paddingBottom: Spacing.md,
+    paddingHorizontal: Spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerTitle: {
-    color: '#FFF',
     fontSize: FontSize.lg,
     fontWeight: '700',
     flex: 1,
     marginHorizontal: Spacing.lg,
     textAlign: 'center',
+  },
+  progressBarBg: {
+    height: 4,
+    backgroundColor: 'rgba(150,150,150,0.1)',
+    width: '100%',
+  },
+  progressBarFill: {
+    height: 4,
+    width: '0%', // Animated
   },
   transparentHeader: {
     position: 'absolute',
@@ -406,105 +431,103 @@ const styles = StyleSheet.create({
     width: '100%',
     height: HERO_HEIGHT,
     position: 'relative',
+    backgroundColor: '#000',
   },
   featuredImage: {
     width: '100%',
     height: '100%',
   },
-  heroGradient: {
-    position: 'absolute',
-    bottom: -2,
-    left: 0,
-    right: 0,
-    height: 40,
-    backgroundColor: 'rgba(0,0,0,0.1)', // subtle blending into bg
-  },
   articleContent: {
-    padding: Spacing.xl,
-    paddingTop: Spacing.xxl,
-    borderTopLeftRadius: BorderRadius.xl,
-    borderTopRightRadius: BorderRadius.xl,
-    marginTop: -20,
+    padding: 24,
+    paddingTop: 32,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    marginTop: -32,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: -8 },
+    shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.1,
-    shadowRadius: 16,
-    elevation: 10,
+    shadowRadius: 12,
+    elevation: 8,
   },
   categoryRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-    marginBottom: Spacing.md,
+    marginBottom: 16,
   },
-  readTime: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
+  categoryBadge: {
+    paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: BorderRadius.full,
-    gap: Spacing.xs,
+    borderRadius: 8,
   },
-  readTimeText: {
-    fontSize: FontSize.xs,
-    fontWeight: '700',
+  categoryText: {
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
-  title: {
-    fontSize: FontSize.hero + 4,
+  articleTitle: {
+    fontSize: 28, // Master-level Typography
     fontWeight: '900',
-    lineHeight: 42,
-    marginBottom: Spacing.lg,
+    lineHeight: 38,
+    marginBottom: 24,
     letterSpacing: -0.5,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: Spacing.xl,
-    paddingBottom: Spacing.lg,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(150,150,150,0.2)',
+    marginBottom: 24,
   },
   authorInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
+    gap: 12,
   },
   avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  metaRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   metaText: {
-    fontSize: FontSize.md,
+    fontSize: 16,
+    marginBottom: 2,
   },
   metaTextSmall: {
-    fontSize: FontSize.xs + 1,
+    fontSize: 13,
     fontWeight: '500',
   },
-  dot: {
-    marginHorizontal: Spacing.xs,
-    fontSize: FontSize.xs,
-  },
   htmlWrapper: {
-    marginTop: Spacing.sm,
+    marginTop: 0,
   },
   relatedSection: {
-    marginTop: Spacing.xxxxl,
-    paddingTop: Spacing.xl,
-    borderTopWidth: 4,
-    borderTopColor: 'rgba(150,150,150,0.1)',
+    marginTop: 48,
+    paddingTop: 32,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(150,150,150,0.2)',
   },
   relatedTitle: {
-    fontSize: FontSize.xxl,
+    fontSize: 24,
     fontWeight: '800',
-    marginBottom: Spacing.xl,
+    marginBottom: 24,
     letterSpacing: -0.5,
+  },
+  floatingButtons: {
+    position: 'absolute',
+    bottom: 32,
+    right: 24,
+    gap: 16,
+  },
+  circleBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#2563EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
 });

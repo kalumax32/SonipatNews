@@ -1,66 +1,63 @@
 // Premium color palette for Sonipat News
+const CommonColors = {
+  primary: '#2563EB',
+  primaryLight: '#60A5FA',
+  accent: '#2563EB',
+  accentLight: '#93C5FD',
+  white: '#FFFFFF',
+  black: '#000000',
+  success: '#10B981',
+  error: '#EF4444',
+  danger: '#EF4444',
+};
+
 export const Colors = {
   light: {
-    primary: '#C62828',
-    primaryDark: '#8E0000',
-    primaryLight: '#FF5F52',
-    accent: '#FFB300',
-    accentLight: '#FFE54C',
-    background: '#F8F5F0',
+    primary: '#111827', // Primary Text
+    primaryDark: '#000000',
+    primaryLight: '#374151',
+    accent: '#2563EB', // Blue Accent
+    accentLight: '#60A5FA',
+    background: '#F8FAFC', // Premium Off-White Card back
     surface: '#FFFFFF',
     card: '#FFFFFF',
-    glass: 'rgba(255, 255, 255, 0.75)',
-    glassBorder: 'rgba(255, 255, 255, 0.3)',
-    text: '#1A1A1A',
-    textSecondary: '#5C5C5C',
-    textMuted: '#9E9E9E',
-    border: '#E8E4DF',
-    divider: '#F0ECE7',
-    tabBar: '#FFFFFF',
-    tabBarActive: '#C62828',
-    tabBarInactive: '#9E9E9E',
+    glass: 'rgba(255, 255, 255, 0.85)',
+    glassBorder: 'rgba(255, 255, 255, 0.4)',
+    text: '#111827',
+    textSecondary: '#6B7280',
+    textMuted: '#9CA3AF',
+    border: '#E2E8F0',
+    divider: '#F1F5F9',
+    tabBar: 'rgba(255, 255, 255, 0.95)',
+    tabBarActive: '#2563EB',
+    tabBarInactive: '#9CA3AF',
     statusBar: 'dark',
-    overlay: 'rgba(0,0,0,0.55)',
-    searchBg: '#F0ECE7',
-    badge: '#C62828',
+    overlay: 'rgba(0,0,0,0.4)',
+    searchBg: '#F1F5F9',
+    badge: '#2563EB',
     badgeText: '#FFFFFF',
-    skeleton: '#E8E4DF',
-    skeletonHighlight: '#F0ECE7',
-    error: '#D32F2F',
-    success: '#2E7D32',
-    heroGradient: ['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.85)'],
-    cardShadow: '#000',
+    skeleton: '#E2E8F0',
+    skeletonHighlight: '#F8FAFC',
+    danger: '#EF4444',
+    error: '#EF4444',
+    heroGradient: ['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.9)'],
+    cardShadow: '#000000',
   },
   dark: {
-    primary: '#EF5350',
-    primaryDark: '#C62828',
-    primaryLight: '#FF867C',
-    accent: '#FFB300',
-    accentLight: '#FFE54C',
-    background: '#0D0D0D',
-    surface: '#1A1A2E',
-    card: '#1E1E32',
-    glass: 'rgba(26, 26, 46, 0.65)',
-    glassBorder: 'rgba(255, 255, 255, 0.08)',
-    text: '#F5F5F5',
-    textSecondary: '#B0B0B0',
-    textMuted: '#717171',
-    border: '#2D2D44',
-    divider: '#1E1E32',
-    tabBar: 'rgba(13, 13, 13, 0.85)',
-    tabBarActive: '#EF5350',
-    tabBarInactive: '#717171',
-    statusBar: 'light',
-    overlay: 'rgba(0,0,0,0.8)',
-    searchBg: '#1E1E32',
-    badge: '#EF5350',
+    ...CommonColors,
+    background: '#161121', // background-dark
+    card: '#221b33', // Slightly lighter than background-dark
+    text: '#f1f5f9', // text-slate-100
+    textPrimary: '#f1f5f9',
+    textSecondary: '#94a3b8',
+    textMuted: '#64748b',
+    border: '#334155',
+    searchBg: '#1e293b',
     badgeText: '#FFFFFF',
-    skeleton: '#2D2D44',
-    skeletonHighlight: '#3D3D54',
-    error: '#EF5350',
-    success: '#66BB6A',
-    heroGradient: ['transparent', 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.9)'],
-    cardShadow: '#000',
+    skeleton: '#332a4a',
+    skeletonHighlight: '#403859',
+    heroGradient: ['transparent', 'rgba(0,0,0,0.6)', 'rgba(0,0,0,1)'],
+    cardShadow: '#000000',
   },
 };
 
@@ -79,43 +76,73 @@ export const CategoryColors = {
 };
 
 export const Spacing = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  xxl: 24,
-  xxxl: 32,
-  xxxxl: 40,
+  xs: 8,
+  sm: 12,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 40,
+  xxxl: 48,
+  xxxxl: 64,
 };
 
 export const BorderRadius = {
-  xs: 4,
   sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  xxl: 24,
+  md: 16,
+  lg: 20,
+  xl: 28,
   full: 999,
 };
 
+export const Typography = {
+  titleXL: {
+    fontSize: 28,
+    fontWeight: '700', // font-bold
+    fontFamily: 'Newsreader_700Bold',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    fontFamily: 'Inter_700Bold',
+  },
+  body: {
+    fontSize: 17,
+    lineHeight: 28,
+    fontFamily: 'Inter_400Regular',
+  },
+  caption: {
+    fontSize: 13,
+    fontFamily: 'Inter_500Medium',
+  },
+};
+
 export const FontSize = {
-  xs: 11,
-  sm: 13,
-  md: 15,
-  lg: 17,
+  xs: 12,
+  sm: 14,
+  md: 16,
+  lg: 18,
   xl: 20,
   xxl: 24,
   hero: 28,
-  display: 32,
+  display: 34,
 };
 
 export const FontFamily = {
-  heading: undefined, // Will use system serif
-  body: undefined,    // Will use system default
+  display: 'Newsreader_700Bold',
+  regular: 'Inter_400Regular',
+  medium: 'Inter_500Medium',
+  semibold: 'Inter_600SemiBold',
+  bold: 'Inter_700Bold',
 };
 
 export const Shadows = {
+  soft: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 20,
+    elevation: 3,
+  },
   card: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

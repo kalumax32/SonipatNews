@@ -1,9 +1,10 @@
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
-import { Shadows, BorderRadius } from '../theme';
+import { BorderRadius } from '../theme';
 
 export default function FloatingButton({
   icon = 'share-outline',
@@ -31,18 +32,28 @@ export default function FloatingButton({
         accessibilityLabel="ऊपर जाएँ"
         accessibilityHint="फ़ीड के शीर्ष पर वापस जाने के लिए दो बार टैप करें"
         style={({ pressed }) => [
-          styles.button,
           {
-            backgroundColor: colors.primary,
             width: size,
             height: size,
             borderRadius: size / 2,
+            overflow: 'hidden',
             transform: [{ scale: pressed ? 0.9 : 1 }],
+            shadowColor: colors.primary,
+            shadowOffset: { width: 0, height: 6 },
+            shadowOpacity: 0.4,
+            shadowRadius: 14,
+            elevation: 10,
           },
-          Shadows.float,
         ]}
       >
-        <Ionicons name={icon} size={24} color="#FFFFFF" />
+        <LinearGradient
+          colors={[colors.primary, colors.primaryLight || colors.accent || '#2563EB']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.gradient, { width: size, height: size }]}
+        >
+          <Ionicons name={icon} size={24} color="#FFFFFF" />
+        </LinearGradient>
       </Pressable>
     </MotiView>
   );
@@ -55,8 +66,9 @@ const styles = StyleSheet.create({
     right: 20,
     zIndex: 100,
   },
-  button: {
+  gradient: {
     alignItems: 'center',
     justifyContent: 'center',
   },
 });
+

@@ -1,8 +1,5 @@
 const BASE_URL = 'https://sonipatnews.in/wp-json/wp/v2';
 
-/**
- * Fetch with a timeout to prevent infinite loading
- */
 async function fetchWithTimeout(url, timeoutMs = 15000) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -19,7 +16,6 @@ async function fetchWithTimeout(url, timeoutMs = 15000) {
   }
 }
 
-// Category ID mapping from the live WordPress API
 export const CATEGORIES = [
   { id: 19, name: 'सोनीपत', slug: 'sonipat' },
   { id: 39, name: 'भारत', slug: 'india' },
@@ -32,15 +28,11 @@ export const CATEGORIES = [
   { id: 24, name: 'धर्म', slug: 'religion' },
 ];
 
-/**
- * Transform a raw WordPress post (with _embed) into our app's article format
- */
 export function transformPost(post) {
   const author = post._embedded?.author?.[0];
   const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
   const terms = post._embedded?.['wp:term']?.[0] || [];
 
-  // Estimate reading time (Hindi text: ~200 words/min)
   const wordCount = post.content?.rendered
     ? post.content.rendered.replace(/<[^>]*>/g, '').split(/\s+/).length
     : 0;
@@ -94,15 +86,15 @@ function formatDate(dateStr) {
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-/**
- * Fetch paginated posts
- */
 export async function fetchPosts(page = 1, perPage = 10) {
   const url = `${BASE_URL}/posts?_embed&per_page=${perPage}&page=${page}`;
   const res = await fetchWithTimeout(url);
   if (!res.ok) throw new Error(`Failed to fetch posts: ${res.status}`);
   const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1', 10);
   const data = await res.json();
+  
+  if (!Array.isArray(data)) return { posts: [], totalPages: 0, currentPage: page };
+  
   return {
     posts: data.map(transformPost),
     totalPages,
@@ -110,15 +102,15 @@ export async function fetchPosts(page = 1, perPage = 10) {
   };
 }
 
-/**
- * Fetch posts filtered by category
- */
 export async function fetchPostsByCategory(categoryId, page = 1, perPage = 10) {
   const url = `${BASE_URL}/posts?_embed&categories=${categoryId}&per_page=${perPage}&page=${page}`;
   const res = await fetchWithTimeout(url);
   if (!res.ok) throw new Error(`Failed to fetch category posts: ${res.status}`);
   const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1', 10);
   const data = await res.json();
+  
+  if (!Array.isArray(data)) return { posts: [], totalPages: 0, currentPage: page };
+
   return {
     posts: data.map(transformPost),
     totalPages,
@@ -126,20 +118,17 @@ export async function fetchPostsByCategory(categoryId, page = 1, perPage = 10) {
   };
 }
 
-/**
- * Search posts
- */
 export async function searchPosts(query, page = 1, perPage = 10) {
   const url = `${BASE_URL}/posts?_embed&search=${encodeURIComponent(query)}&per_page=${perPage}&page=${page}`;
   const res = await fetchWithTimeout(url);
   if (!res.ok) throw new Error(`Search failed: ${res.status}`);
   const data = await res.json();
-  return data.map(transformPost);
+  
+  if (!Array.isArray(data)) return [];
+  
+  return Array.isArray(data) ? data.map(transformPost) : [];
 }
 
-/**
- * Fetch a single post by ID
- */
 export async function fetchPost(postId) {
   const url = `${BASE_URL}/posts/${postId}?_embed`;
   const res = await fetchWithTimeout(url);

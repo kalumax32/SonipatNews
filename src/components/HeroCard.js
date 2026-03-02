@@ -3,15 +3,16 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../context/ThemeContext';
-import { BorderRadius, FontSize, Spacing } from '../theme';
-import AnimatedCard from './AnimatedCard';
+import { BorderRadius, Typography, Spacing } from '../theme';
+import AnimatedPressable from './AnimatedPressable';
 import CategoryBadge from './CategoryBadge';
 import PulsingDot from './PulsingDot';
 
-const { height } = Dimensions.get('window');
-const HERO_HEIGHT = height * 0.55; // 55% of screen height
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
-// Simple blurhash for placeholder while image loads
+const HERO_HEIGHT = 400;
+
 const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
@@ -23,134 +24,180 @@ export default function HeroCard({ article, onPress, index = 0 }) {
   const isToday = new Date(article.date).toDateString() === new Date().toDateString();
 
   return (
-    <AnimatedCard
+    <AnimatedPressable
       onPress={onPress}
-      index={index}
-      style={[styles.container, { shadowColor: colors.cardShadow }]}
+      style={[
+        styles.container,
+        {
+          shadowColor: colors.cardShadow,
+          backgroundColor: colors.card,
+        },
+      ]}
     >
-      <Image
-        style={styles.image}
-        source={article.featuredImage || article.featuredImageMedium}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={300}
-      />
-      
-      <LinearGradient
-        colors={colors.heroGradient}
-        style={styles.gradient}
-        locations={[0, 0.6, 1]}
-      >
-        <View style={styles.topRow}>
-          {article.categories?.length > 0 && (
-            <CategoryBadge
-              name={article.categories[0].name}
-              slug={article.categories[0].slug}
-            />
-          )}
-          <View style={[styles.readTime, { backgroundColor: colors.glass }]}>
-            <Text style={[styles.readTimeText, { color: colors.text }]}>
-              {article.readTime} min read
-            </Text>
+      <View style={styles.imageWrapper}>
+        <Image
+          style={styles.image}
+          source={article.featuredImage || article.featuredImageMedium}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={300}
+        />
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.9)']}
+          style={styles.gradient}
+        />
+        
+        <View style={styles.contentContainer}>
+          <View style={styles.topRow}>
+            <View style={styles.featuredBadge}>
+              <Text style={styles.featuredText}>FEATURED</Text>
+            </View>
+            <Text style={styles.readTimeText}>{article.readTime} min read</Text>
           </View>
-        </View>
 
-        <View style={styles.bottomContent}>
           <Text style={styles.title} numberOfLines={3}>
             {article.title}
           </Text>
           
+          {/* Add a short description since Stitch uses it */}
+          {article.excerpt && (
+            <Text style={styles.description} numberOfLines={2}>
+              {article.excerpt.replace(/<[^>]*>?/gm, '')}
+            </Text>
+          )}
+
           <View style={styles.metaRow}>
-            {isToday && (
-              <View style={styles.newRow}>
-                <PulsingDot color={colors.primary} size={6} glowSize={16} />
-                <Text style={styles.newText}>NEW</Text>
-                <Text style={styles.dot}>•</Text>
+            <View style={styles.authorSection}>
+              <View style={styles.avatarContainer}>
+                <Text style={styles.avatarInitials}>{article.author.charAt(0)}</Text>
               </View>
-            )}
-            <Text style={styles.metaText}>{article.author}</Text>
-            <Text style={styles.dot}>•</Text>
-            <Text style={styles.metaText}>{article.dateFormatted}</Text>
+              <Text style={styles.metaAuthorText}>{article.author}</Text>
+            </View>
+            
+            <BlurView intensity={30} tint="light" style={styles.actionBtn}>
+              <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
+            </BlurView>
           </View>
         </View>
-      </LinearGradient>
-    </AnimatedCard>
+      </View>
+    </AnimatedPressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: Spacing.lg,
+    marginHorizontal: Spacing.md,
     marginBottom: Spacing.xl,
-    borderRadius: BorderRadius.xl,
-    height: HERO_HEIGHT,
+    marginTop: Spacing.md,
+    borderRadius: BorderRadius.xl, // robust squircle corners
     overflow: 'hidden',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
     elevation: 8,
+  },
+  imageWrapper: {
+    width: '100%',
+    height: HERO_HEIGHT,
+    position: 'relative',
   },
   image: {
     ...StyleSheet.absoluteFillObject,
   },
   gradient: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: 'space-between',
-    padding: Spacing.xl,
+    justifyContent: 'flex-end',
+  },
+  contentContainer: {
+    padding: Spacing.lg, // 24px
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   topRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
   },
-  readTime: {
-    paddingHorizontal: Spacing.sm,
+  featuredBadge: {
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: BorderRadius.full,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  featuredText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
   },
   readTimeText: {
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  bottomContent: {
-    marginTop: 'auto',
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.8)',
+    fontWeight: '500',
   },
   title: {
+    fontFamily: Typography.titleXL.fontFamily,
     color: '#FFFFFF',
-    fontSize: FontSize.hero,
-    fontWeight: '800',
-    lineHeight: 34,
-    textShadowColor: 'rgba(0,0,0,0.6)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-    marginBottom: Spacing.md,
+    fontSize: 26,
+    fontWeight: '700',
+    lineHeight: 32,
+    marginBottom: 12,
+  },
+  description: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+    lineHeight: 22,
+    marginBottom: 16,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.1)',
+    marginTop: 4,
   },
-  newRow: {
+  authorSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
   },
-  newText: {
-    color: '#FFFFFF',
-    fontSize: FontSize.xs,
+  avatarContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  avatarInitials: {
+    color: '#FFF',
+    fontSize: 10,
     fontWeight: '700',
-    marginLeft: 4,
-    letterSpacing: 0.5,
   },
-  metaText: {
-    color: 'rgba(255,255,255,0.85)',
-    fontSize: FontSize.sm,
+  metaAuthorText: {
+    fontSize: 12,
     fontWeight: '500',
+    color: '#FFFFFF',
   },
-  dot: {
-    color: 'rgba(255,255,255,0.5)',
-    marginHorizontal: Spacing.sm,
-    fontSize: FontSize.sm,
+  actionBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
 });

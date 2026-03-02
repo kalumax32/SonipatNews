@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,200..800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2563EB", 
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#161121",
+                        "slate-custom": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "sans": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "1.25rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-news {
+            font-family: 'Newsreader', serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-custom dark:text-slate-100">
+<div class="relative mx-auto max-w-[430px] min-h-screen bg-background-light dark:bg-background-dark pb-24 shadow-2xl overflow-x-hidden">
+<header class="sticky top-0 z-20 bg-background-light/95 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-slate-100">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-slate-200 border border-slate-100 flex items-center justify-center overflow-hidden">
+<img class="size-full object-cover" data-alt="Professional profile portrait of a woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtv02iKSM5kkfyeHj5DZoouW_Hz4EV-Iz7ZK6I3L77PBfi-G-dKvmyqzxTeqSm4gPUKf_EomdZsUthIwc1S3MgtZYW5xxMGHHvPpRznXiggT5Cu7soK-CA2hB6EPBa2VYe_m-Xg81QypI33d6hSizEIWkl_0-anDWiDnxhr5PYBW_oAn5W3xDL_S43a3o0QhZ8ixnBLg6tnqTR7I6GHGurNOx2OOQ-y2O_yTl8CG6oWvTAHpa5nrVaqs-8CNrPOoWlxM0gh_Q2ZCyY"/>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Monday, Oct 24</p>
+<h1 class="text-xl font-display font-bold text-slate-900">Good Morning</h1>
+</div>
+</div>
+<button class="size-10 rounded-full bg-white flex items-center justify-center shadow-soft border border-slate-100 text-slate-700 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+</button>
+</header>
+<div class="flex gap-2 px-6 py-4 overflow-x-auto no-scrollbar">
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-white shadow-lg shadow-primary/20">
+<p class="text-xs font-semibold">For You</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white border border-slate-200 px-5 text-slate-600 shadow-sm">
+<p class="text-xs font-semibold">Business</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white border border-slate-200 px-5 text-slate-600 shadow-sm">
+<p class="text-xs font-semibold">Tech</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white border border-slate-200 px-5 text-slate-600 shadow-sm">
+<p class="text-xs font-semibold">Culture</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white border border-slate-200 px-5 text-slate-600 shadow-sm">
+<p class="text-xs font-semibold">Design</p>
+</div>
+</div>
+<section class="px-6 py-2">
+<div class="group relative flex flex-col h-[400px] w-full overflow-hidden rounded-[20px] shadow-soft bg-white">
+<div class="absolute inset-0 size-full">
+<img class="size-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Abstract visualization of blockchain data nodes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUgUQ-hkISNTxiKpIrMJQ1_Wdre33GumNVHTjtWwafUuWdJybld7Dj4pxRnG3Mi7mIYlg4eFZT1XkTeS33y74YynIaJkrj7SyRCWTaSg_9dnkodSZK-EgWe_ZI7VjNDJ1aLhH20uR44IKruk5J-2yftwDo3OU7MXzRtEtMp2amAe5zm3AcQrAQMf8rkN6G08xuhP1hB94ZJKkaoTyBEUZZhZe2DRXH7MRo4BdxKY-n1Tk6vDEYpHLOqsHu3PtWcnOe_vfX5jOm5_mw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+</div>
+<div class="relative flex flex-col justify-end h-full p-6 text-white z-10">
+<div class="flex items-center gap-2 mb-3">
+<span class="px-2.5 py-1 rounded bg-white/20 backdrop-blur-sm text-[10px] font-bold text-white uppercase tracking-wider border border-white/10">Featured</span>
+<span class="text-[11px] text-white/80 font-medium">8 min read</span>
+</div>
+<h2 class="text-3xl font-display font-bold leading-tight mb-3 drop-shadow-sm">
+                        The Future of Decentralized Finance in 2024
+                    </h2>
+<p class="text-sm text-white/80 line-clamp-2 leading-relaxed mb-4 drop-shadow-sm">
+                        Exploring how blockchain is reshaping global banking systems and what it means for the everyday consumer.
+                    </p>
+<div class="flex items-center justify-between pt-2 border-t border-white/10 mt-1">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full border border-white/20 overflow-hidden">
+<img class="size-full object-cover" data-alt="Author profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsoByhpx-ymxFE9NBCBUaz6ZX3xzlAXo9nfeKrdndqjlsDkj-gWxsE5_EBasmN5oc2Kq4CfPW2wiEZqUur5qt6g6g5M_KRar38en_B3xmJM_SIFjO6pT8h4AkuTJtn9CZP8ElEd1ggaloTjbbbbEaxpzKn0ysz6OBdnr4Ibx1vm8AANFQFH_ZqdvS6MJiMs6tRqNe4_FOvE8ct4sac_LwVbrHnyZoQ2Ftd9B4XFyL427lGjTdndXgEUoiR6mKEQ_1jfDpm8WW1To3R"/>
+</div>
+<span class="text-xs font-medium text-white">Marcus Thorne</span>
+</div>
+<button class="size-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white hover:text-black transition-all">
+<span class="material-symbols-outlined text-[18px]">arrow_outward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-8 px-6 pb-4">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-display font-bold text-slate-900">Trending</h3>
+<a class="text-xs font-bold text-primary flex items-center gap-1 uppercase tracking-wider hover:opacity-80 transition-opacity" href="#">
+                    See All <span class="material-symbols-outlined text-[14px]">arrow_forward_ios</span>
+</a>
+</div>
+<div class="flex flex-col gap-4">
+<div class="p-4 rounded-[20px] bg-white shadow-soft border border-slate-100/50 flex gap-4 items-start group hover:border-slate-200 transition-colors">
+<div class="flex-1 space-y-2">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Technology</span>
+</div>
+<h4 class="text-[17px] font-display font-bold leading-snug text-slate-900 group-hover:text-primary transition-colors">
+                            Why Artificial Intelligence is actually augmenting human creativity
+                        </h4>
+<div class="flex items-center gap-3 text-[11px] text-slate-500 pt-1">
+<span class="font-medium text-slate-700">Elena Vance</span>
+<span class="size-0.5 rounded-full bg-slate-300"></span>
+<span>4h ago</span>
+</div>
+</div>
+<div class="size-24 shrink-0 rounded-2xl overflow-hidden bg-slate-100">
+<img class="size-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Modern AI chip visualization with purple lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaefOw0x9YcVzSCSD7Qz895l18xs74uoEc26wK3jyS9PSAaUW-xZOQCVr8PYnjG5p-MKWyX6krodGmv2AQjX9_Aj-54e6Uwv3dPq4DdPmWAKS5pROXJZd0H32GiOy4x8H19e6Zx_UXQrsRpa9edWYeJh8fNdWQzX-et3Q26j1VdGnHw_oR6q4hrYOxJ7bg31Q8rObTgPcChZv-BAySJjbeVHmefdDnp5Y5sjev1Zx2SXqXyHd0OVA9teXurBsvAsb02ujukll0EMFg"/>
+</div>
+</div>
+<div class="p-4 rounded-[20px] bg-white shadow-soft border border-slate-100/50 flex gap-4 items-start group hover:border-slate-200 transition-colors">
+<div class="flex-1 space-y-2">
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Sustainability</span>
+<h4 class="text-[17px] font-display font-bold leading-snug text-slate-900 group-hover:text-primary transition-colors">
+                            The architecture of the future: Building with living materials
+                        </h4>
+<div class="flex items-center gap-3 text-[11px] text-slate-500 pt-1">
+<span class="font-medium text-slate-700">Julian Ricci</span>
+<span class="size-0.5 rounded-full bg-slate-300"></span>
+<span>6h ago</span>
+</div>
+</div>
+<div class="size-24 shrink-0 rounded-2xl overflow-hidden bg-slate-100">
+<img class="size-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Modern sustainable architecture with green plants" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBIabN4oz3efXj1dUvuN7xM1xQRtqhItzuV2XlFGSRD5sTc1UU9oY5IJfqfu-RoYPQn8CqWFgo86JKiT5W-uBaxdTN-GEjfIL57LkPfqerq-Xfpixv2-AKvJj04pwEaA_Gihin9hngGA8sWVlLvKBEo3HpLz35RG6ZAje-Ndf0hjrOSP-lg-eTUSSbHeCSaQyxyo5_efBwEOvDjkhs1BH_FUE6iUG4B_U85sEMpcIkhwJMt43Z0ldN84woEyOysR4Eu9yQvJpO5HU_"/>
+</div>
+</div>
+<div class="p-4 rounded-[20px] bg-white shadow-soft border border-slate-100/50 flex gap-4 items-start group hover:border-slate-200 transition-colors">
+<div class="flex-1 space-y-2">
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Business</span>
+<h4 class="text-[17px] font-display font-bold leading-snug text-slate-900 group-hover:text-primary transition-colors">
+                            Remote work: How top companies are rethinking the office space
+                        </h4>
+<div class="flex items-center gap-3 text-[11px] text-slate-500 pt-1">
+<span class="font-medium text-slate-700">Sarah Jenkins</span>
+<span class="size-0.5 rounded-full bg-slate-300"></span>
+<span>12h ago</span>
+</div>
+</div>
+<div class="size-24 shrink-0 rounded-2xl overflow-hidden bg-slate-100">
+<img class="size-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Minimalist modern office interior with natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnPL3hXF9E1N8kUO0yK4ULIG19q5Fl1mM-bHypt-BRayGSkhYo6MYvp4to1MaDv5VCnGnuqh3PHOiiakgaNlAUetfpIelVDkQlzMXOoYBdRZcA11jnKVJm4cI6m690N_g7GDjk2J1r4vhZCfcEhhia3yVewnhRfkNjQepM5MZPkUhX-KQsZNEDBGZkU1XsUiIYwEfKM8LtSQ6Ts-amtvtd5Gh4ljX2wdMFZ04zuzKPozXYU5MQVMNvZV1EsZYfVQ0sFoROQnkxgiqJ"/>
+</div>
+</div>
+</div>
+</section>
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-30">
+<div class="bg-white/90 backdrop-blur-xl border-t border-slate-200 px-6 pt-3 pb-8 flex items-center justify-between shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center gap-1.5 text-primary" href="#">
+<span class="material-symbols-outlined fill-[1] text-[26px]">home</span>
+<p class="text-[10px] font-bold">Home</p>
+</a>
+<a class="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">explore</span>
+<p class="text-[10px] font-bold">Explore</p>
+</a>
+<a class="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">bookmark</span>
+<p class="text-[10px] font-bold">Saved</p>
+</a>
+<a class="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">person</span>
+<p class="text-[10px] font-bold">Profile</p>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

@@ -3,8 +3,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../context/ThemeContext';
-import { BorderRadius, FontSize, Spacing } from '../theme';
-import AnimatedCard from './AnimatedCard';
+import { BorderRadius, Typography, Spacing, FontSize } from '../theme';
+import AnimatedPressable from './AnimatedPressable';
 import GlassCard from './GlassCard';
 import CategoryBadge from './CategoryBadge';
 
@@ -28,7 +28,7 @@ export default function NewsCard({ article, onPress, index = 0, highlightQuery =
     const parts = article.title.split(new RegExp(`(${highlightQuery})`, 'gi'));
     return (
       <Text style={[styles.title, { color: colors.text }]} numberOfLines={3}>
-        {parts.map((part, i) =>
+        {(parts || []).map((part, i) =>
           part.toLowerCase() === highlightQuery.toLowerCase() ? (
             <Text key={i} style={{ color: colors.primary, fontWeight: '900', backgroundColor: colors.primary + '20' }}>
               {part}
@@ -42,116 +42,126 @@ export default function NewsCard({ article, onPress, index = 0, highlightQuery =
   };
 
   return (
-    <AnimatedCard
+    <AnimatedPressable
       onPress={onPress}
-      index={index}
-      style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.md }}
+      style={[
+        styles.card,
+        {
+          backgroundColor: colors.card,
+          shadowColor: colors.cardShadow,
+        },
+      ]}
       accessibilityRole="button"
       accessibilityLabel={`लेख पढ़ें: ${article.title}`}
       accessibilityHint="इस लेख के विवरण देखने के लिए दो बार टैप करें"
     >
-      <GlassCard categorySlug={category?.slug}>
-        <View style={styles.cardInner}>
-          <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={article.featuredImageMedium || article.featuredImage}
-              placeholder={blurhash}
-              contentFit="cover"
-              transition={200}
-            />
-            <LinearGradient
-              colors={['transparent', 'rgba(0,0,0,0.6)']}
-              style={styles.imageGradient}
-            >
-              <Text style={styles.imageReadTime}>{article.readTime} min</Text>
-            </LinearGradient>
-          </View>
-          
-          <View style={styles.content}>
-            {category && (
-              <Text
-                style={[
-                  styles.categoryText,
-                  { color: colors.primary },
-                ]}
-              >
+      <View style={[styles.cardInner, { borderColor: colors.border, backgroundColor: colors.card }]}>
+        <View style={styles.content}>
+          {category && (
+            <View style={styles.categoryBadgeWrapper}>
+              <Text style={[styles.categoryText, { color: colors.primary }]}>
                 {category.name.toUpperCase()}
               </Text>
-            )}
-            
-            {renderHighlightedTitle()}
-            
-            <View style={styles.metaRow}>
-              <Text style={[styles.metaText, { color: colors.textMuted }]} numberOfLines={1}>
-                {article.author}
-              </Text>
-              <Text style={[styles.dot, { color: colors.textMuted }]}>•</Text>
-              <Text style={[styles.metaText, { color: colors.textMuted }]}>
-                {article.dateFormatted}
-              </Text>
             </View>
+          )}
+          
+          {renderHighlightedTitle()}
+          
+          <View style={styles.metaRow}>
+            <Text style={[styles.metaAuthor, { color: colors.textPrimary }]} numberOfLines={1}>
+              {article.author}
+            </Text>
+            <View style={[styles.dot, { backgroundColor: colors.border }]} />
+            <Text style={[styles.metaDate, { color: colors.textSecondary }]}>
+              {article.dateFormatted}
+            </Text>
           </View>
         </View>
-      </GlassCard>
-    </AnimatedCard>
+
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.image}
+            source={article.featuredImageMedium || article.featuredImage}
+            placeholder={blurhash}
+            contentFit="cover"
+            transition={200}
+          />
+        </View>
+      </View>
+    </AnimatedPressable>
   );
 }
 
 const styles = StyleSheet.create({
+  card: {
+    marginHorizontal: Spacing.lg,
+    marginBottom: Spacing.md,
+    borderRadius: BorderRadius.lg, // 20px
+    // Utilizing Shadows config if available, otherwise manual
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 20,
+    elevation: 2,
+  },
   cardInner: {
     flexDirection: 'row',
+    padding: Spacing.md,
+    gap: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+  },
+  content: {
+    flex: 1,
+    paddingRight: Spacing.xs,
   },
   imageContainer: {
-    width: 110,
-    height: 120,
-    position: 'relative',
+    width: 96,
+    height: 96,
+    borderRadius: BorderRadius.md, // 16px
+    overflow: 'hidden',
+    backgroundColor: '#F1F5F9', // light gray fallback
+    flexShrink: 0,
   },
   image: {
     width: '100%',
     height: '100%',
   },
-  imageGradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 40,
-    justifyContent: 'flex-end',
-    padding: Spacing.xs,
-  },
-  imageReadTime: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  content: {
-    flex: 1,
-    padding: Spacing.md,
-    justifyContent: 'space-between',
+  categoryBadgeWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
   },
   categoryText: {
     fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-    marginBottom: Spacing.xs,
+    fontWeight: '800', // tracking-widest
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
   },
   title: {
-    fontSize: FontSize.md,
+    fontSize: 17,
+    fontFamily: Typography.titleXL.fontFamily, // 'Newsreader_700Bold'
     fontWeight: '700',
-    lineHeight: 22,
+    lineHeight: 23,
+    marginBottom: Spacing.xs,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: Spacing.sm,
+    marginTop: 4,
   },
-  metaText: {
-    fontSize: FontSize.xs,
+  metaAuthor: {
+    fontSize: 11,
     flexShrink: 1,
+    fontWeight: '500',
+  },
+  metaDate: {
+    fontSize: 11,
   },
   dot: {
-    fontSize: FontSize.xs,
-    marginHorizontal: Spacing.xs,
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    marginHorizontal: 8,
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -34,6 +34,8 @@ export default function SearchScreen({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
   const inputRef = useRef(null);
+  const flatListRef = useRef(null);
+  useScrollToTop(flatListRef);
 
   useEffect(() => {
     const loadRecentSearches = async () => {

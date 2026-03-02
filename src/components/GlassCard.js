@@ -13,32 +13,32 @@ export default function GlassCard({
   const { colors, isDark } = useTheme();
   const borderColor = CategoryColors[categorySlug] || CategoryColors.default;
 
-  if (isDark && Platform.OS !== 'web') {
+  if (isDark) {
+    // In dark mode: use a clearly visible card bg with a subtle glowing border
     return (
-      <View style={[styles.container, style]}>
-        <BlurView
-          intensity={30}
-          tint="dark"
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.card, // #161616 — distinct from #0D0D0D bg
+            borderColor: colors.border,   // #2D2D2D — visible border
+            borderWidth: 1,
+          },
+          style,
+        ]}
+      >
+        <View
           style={[
-            styles.blur,
-            {
-              borderColor: colors.glassBorder,
-              borderWidth: 1,
-            },
+            styles.categoryBorder,
+            { backgroundColor: borderColor, width: borderWidth },
           ]}
-        >
-          <View
-            style={[
-              styles.categoryBorder,
-              { backgroundColor: borderColor, width: borderWidth },
-            ]}
-          />
-          <View style={styles.content}>{children}</View>
-        </BlurView>
+        />
+        <View style={styles.content}>{children}</View>
       </View>
     );
   }
 
+  // Light mode: clean white card with subtle border
   return (
     <View
       style={[
@@ -64,13 +64,13 @@ export default function GlassCard({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: BorderRadius.lg,
+    borderRadius: BorderRadius.xxl,
     overflow: 'hidden',
     flexDirection: 'row',
   },
   blur: {
     flex: 1,
-    borderRadius: BorderRadius.lg,
+    borderRadius: BorderRadius.xxl,
     overflow: 'hidden',
     flexDirection: 'row',
   },
